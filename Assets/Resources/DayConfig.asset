@@ -17,11 +17,11 @@ MonoBehaviour:
     PassengerList:
     - FoodOrderList:
       - Quantity: 1
-        FoodId: 0
-      - Quantity: 1
         FoodId: 1
-    - FoodOrderList:
       - Quantity: 1
+        FoodId: 0
+    - FoodOrderList:
+      - Quantity: 2
         FoodId: 0
       - Quantity: 1
         FoodId: 1

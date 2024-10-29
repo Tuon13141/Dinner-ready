@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3753302844414658630}
+  - component: {fileID: -9007602317421284550}
   m_Layer: 0
   m_Name: Big_Burger_1
   m_TagString: Untagged
@@ -32,6 +33,18 @@ Transform:
   - {fileID: 4187763394225747194}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-9007602317421284550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142377268747863319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6615f858db03ef469b0c50e09ca424b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &243717962063418591
 PrefabInstance:
   m_ObjectHideFlags: 0

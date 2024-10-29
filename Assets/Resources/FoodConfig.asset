@@ -19,31 +19,31 @@ MonoBehaviour:
     Price: 5
     DayUnlock: 0
     foodStacks:
-    - {fileID: 8309546260797906782, guid: 67d24774c48141547a611b3130e5b337, type: 3}
-    - {fileID: 6582763211751754643, guid: a4607f9d207189b47b846cad89c4c4c8, type: 3}
-    - {fileID: 7549078218508508521, guid: 7b78af47a361f1a41b5c34513c0208a9, type: 3}
+    - {fileID: 8062405100951195074, guid: 67d24774c48141547a611b3130e5b337, type: 3}
+    - {fileID: -7310650311988509540, guid: a4607f9d207189b47b846cad89c4c4c8, type: 3}
+    - {fileID: -4694446936967380551, guid: 7b78af47a361f1a41b5c34513c0208a9, type: 3}
   - Id: 1
     Name: Small Burger
     Icon: {fileID: -1235341349, guid: e0dfc03eea363174c802244d5e66a66f, type: 3}
     Price: 20
     DayUnlock: 0
     foodStacks:
-    - {fileID: 175435513470263685, guid: a76ea9158843ab445a7b297aee4cb764, type: 3}
-    - {fileID: 7922598956275817752, guid: d91864d467fc97c498ead2fc0bc88eab, type: 3}
-    - {fileID: 474082640942752051, guid: 3e68182593386a641adfa357f9a8def1, type: 3}
+    - {fileID: 2859084267531451283, guid: a76ea9158843ab445a7b297aee4cb764, type: 3}
+    - {fileID: 3052215281818984439, guid: d91864d467fc97c498ead2fc0bc88eab, type: 3}
+    - {fileID: 2331222930537764791, guid: 3e68182593386a641adfa357f9a8def1, type: 3}
   - Id: 2
     Name: Fries
     Icon: {fileID: 2040387194, guid: bdbcccaa1a440a04bab070495fc905e6, type: 3}
     Price: 10
     DayUnlock: 1
     foodStacks:
-    - {fileID: 3476168890565457565, guid: d66ebf22eb5b1b648bd328f2ff02ff54, type: 3}
-    - {fileID: 3201936973057609964, guid: db21645d6bd21844092c3fc5dd5cb63b, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
   - Id: 3
     Name: Big Burger
     Icon: {fileID: 1657731146, guid: 64eca55c6e671ed4abf23e9434d2dcab, type: 3}
     Price: 55
     DayUnlock: 2
     foodStacks:
-    - {fileID: 7142377268747863319, guid: 840f727323424264a982bf2bbb2e40b1, type: 3}
-    - {fileID: 5661771730914564229, guid: bb5ce048039f5af41946463254bf2213, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}

@@ -3,6 +3,6 @@ using UnityEngine;
 
 public class FoodSpot : MonoBehaviour
 {
-    public int FoodId {  get; set; }
-
+    public bool IsHadFood {  get; set; }
+     
 }

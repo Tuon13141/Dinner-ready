@@ -21,7 +21,7 @@ public class FoodOrderDrawer : PropertyDrawer
         foreach (var food in foodConfig.FoodList)
         {
             foodNames.Add(food.Name);
-            int foodId = int.Parse(food.Id);
+            int foodId = food.Id;
             foodIds.Add(foodId);
             foodStacksCounts[foodId] = food.foodStacks.Count;
         }
