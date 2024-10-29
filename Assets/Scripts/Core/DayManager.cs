@@ -11,14 +11,20 @@ public class DayManager : Singleton<DayManager>, IOnStart
     [SerializeField] Transform despawnFoodPoint;
 
     [SerializeField] bool useDayInUserData = false;
+    public bool UseDayInUserData => useDayInUserData;
 
     [SerializeField] int dayIndex = 0;
     public int DayIndex => dayIndex;
 
     public Dictionary<int, Food> FoodDict = new Dictionary<int, Food>();
     public Dictionary<int, Day> DayDict = new Dictionary<int, Day>();
+    List<FoodController> currentFoodControllers = new List<FoodController>();
 
     public bool WaveFinished { get; set; } = true;
+    bool isLastWave = false;
+
+    float waveCoin = 0;
+    float dayCoin = 0;
     public void OnStart()
     {
         FoodDict = foodConfig.CreateFoodDictionary();
@@ -51,7 +57,8 @@ public class DayManager : Singleton<DayManager>, IOnStart
             {
                 Food food = FoodDict[foodOrder.FoodId];
                 int index = foodOrder.Quantity - 1;
-
+                waveCoin += food.Price * foodOrder.Quantity;
+                dayCoin += food.Price * foodOrder.Quantity;
                 //Debug.Log(food.Name);
                 //Debug.Log(index);
 
@@ -64,15 +71,17 @@ public class DayManager : Singleton<DayManager>, IOnStart
                 }
                 else
                 {
-                    foodController.SetFoodSpot(foodSpot);
+                    foodController.SetFoodSpot(foodSpot, despawnFoodPoint, food.Id);
                     foodSpot.IsHadFood = true;
                 }
+
+                currentFoodControllers.Add(foodController);
             }
 
             WaveFinished = false;
         }
 
-
+        isLastWave = true;
 
     }
 
@@ -87,5 +96,39 @@ public class DayManager : Singleton<DayManager>, IOnStart
         }
 
         return null;
+    }
+
+    public void CheckAnswer(float answer)
+    {
+        if(answer != waveCoin)
+        {
+            GameManager.Instance.ChangeState(GameStates.Lose);
+            Reset();
+            return;
+        }
+        foreach (FoodController controller in currentFoodControllers)
+        {
+            controller.ChangeState(FoodStage.OnBilled);
+        }
+        if (isLastWave)
+        {
+            GameManager.Instance.ChangeState(GameStates.Win);
+            Reset();
+            return;
+        }
+
+        
+        waveCoin = 0;
+        WaveFinished = true;
+        
+    }
+
+    void Reset()
+    {
+        waveCoin = 0;
+        dayCoin = 0;
+        WaveFinished = true;
+        isLastWave = false;
+        currentFoodControllers.Clear();
     }
 }

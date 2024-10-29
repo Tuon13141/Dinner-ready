@@ -46,7 +46,7 @@ public class UIInGame : UIElement
         int day = DayManager.Instance.DayIndex;
         foreach (Food food in foods)
         {
-            if (food.DayUnlock <= day)
+            if (food.DayUnlock <= day && !availableFoods.Contains(food))
             {
                 availableFoods.Add(food);
                 FoodIcon foodIcon = Instantiate(foodIconPref, foodIconParent);
@@ -152,7 +152,9 @@ public class UIInGame : UIElement
         number_2 = "";
         caculatorStage = CaculatorStage.FirstEnter;
         mathematicalType = MathematicalType.None;
-        
+
+        float result_1 = ConvertStringToFloat(number_1);
+        DayManager.Instance.CheckAnswer(result_1);
     }
     public void PlusButton()
     {

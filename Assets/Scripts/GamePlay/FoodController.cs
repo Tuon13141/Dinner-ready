@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class FoodController : MonoBehaviour
 {
-    FoodSpot FoodSpot;
+    FoodSpot foodSpot;
     [SerializeField] float moveTime = 0.5f;
     [SerializeField] FoodStage foodStage = FoodStage.None;
+    Transform despawnFoodPoint;
+    public int FoodId { get; set; } 
 
-    public void SetFoodSpot(FoodSpot foodSpot)
+    public void SetFoodSpot(FoodSpot foodSpot, Transform transform, int id)
     {
-        this.FoodSpot = foodSpot;
-        transform.parent = foodSpot.transform;
-        StartCoroutine(LerpPosition(foodSpot.transform.position, moveTime));
+        FoodId = id;
+        despawnFoodPoint = transform;
+        this.foodSpot = foodSpot;
+        this.transform.parent = foodSpot.transform;
+
         ChangeState(FoodStage.OnWaitingToBill);
     }
 
@@ -47,10 +51,13 @@ public class FoodController : MonoBehaviour
 
                 break;
             case FoodStage.OnWaitingToBill:
-
+                StartCoroutine(LerpPosition(foodSpot.transform.position, moveTime));
                 break;
             case FoodStage.OnBilled:
-  
+                transform.parent = despawnFoodPoint;
+                foodSpot.IsHadFood = false;
+                StartCoroutine(LerpPosition(despawnFoodPoint.position, moveTime));
+                break;
             default:
                 break;
         }

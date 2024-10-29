@@ -29,25 +29,13 @@ public class GameManager : Singleton<GameManager>
     }
 
    
-    [SerializeField] private GameStates _state = GameStates.Pause;
+    [SerializeField] private GameStates _state = GameStates.Retry;
     public void ChangeState(GameStates newState)
     {
         if (newState == _state) return;
         ExitCurrentState();
         _state = newState;
         EnterNewState();
-    }
-
-    public bool CheckGameState(GameStates newState)
-    {
-        if (_state == newState)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     private void EnterNewState()
@@ -65,13 +53,24 @@ public class GameManager : Singleton<GameManager>
             case GameStates.Play:
               
                 break;
-            case GameStates.Pause:
+            case GameStates.Retry:
+                DayManager.Instance.LoadDay();
                 break;
             case GameStates.Win:
-
+                if (DayManager.Instance.UseDayInUserData)
+                {
+                    UserData.day = DayManager.Instance.DayIndex + 1;
+                }
+              
+                GameUI.Instance.Get<UIInGame>().Hide();
+                GameUI.Instance.Get<UIWin>().Show();
                 break;
             case GameStates.Lose:
-
+                GameUI.Instance.Get<UIInGame>().Hide();
+                GameUI.Instance.Get<UILose>().Show();
+                break;
+            case GameStates.NextLevel:
+                DayManager.Instance.LoadDay();
                 break;
             default:
                 break;
@@ -89,13 +88,16 @@ public class GameManager : Singleton<GameManager>
             case GameStates.Start:
                 break;
             case GameStates.Play:
-                //GameUI.Instance.Get<UITask>().TaskUpdate();
+   
                 break;
-            case GameStates.Pause:
+            case GameStates.Retry:
                 break;
             case GameStates.Win:
                 break;
             case GameStates.Lose:
+                break;
+            case GameStates.NextLevel:
+          
                 break;
             default:
                 break;
@@ -108,5 +110,5 @@ public class GameManager : Singleton<GameManager>
 
 public enum GameStates
 {
-    Play, Win, Lose, Home, Tutorial, Start, Pause
+    Play, Win, Lose, Home, Tutorial, Start, Retry, NextLevel
 }

@@ -26,6 +26,13 @@ MonoBehaviour:
       - Quantity: 1
         FoodId: 1
   - DayID: 1
-    PassengerList: []
+    PassengerList:
+    - FoodOrderList:
+      - Quantity: 1
+        FoodId: 0
+      - Quantity: 1
+        FoodId: 0
+      - Quantity: 1
+        FoodId: 0
   - DayID: 2
     PassengerList: []
