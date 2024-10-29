@@ -6,6 +6,8 @@ public class DayManager : Singleton<DayManager>, IOnStart
 {
     [SerializeField] DayConfig dayConfig;
     [SerializeField] FoodConfig foodConfig;
+    [SerializeField] FoodObjectPool foodObjectPool;
+    public FoodObjectPool FoodObjectPool => foodObjectPool;
     [SerializeField] List<FoodSpot> foodSpots;
     [SerializeField] Transform spawnFoodPoint;
     [SerializeField] Transform despawnFoodPoint;
@@ -15,6 +17,8 @@ public class DayManager : Singleton<DayManager>, IOnStart
 
     [SerializeField] int dayIndex = 0;
     public int DayIndex => dayIndex;
+
+    public int MaxDay { get; set; }
 
     public Dictionary<int, Food> FoodDict = new Dictionary<int, Food>();
     public Dictionary<int, Day> DayDict = new Dictionary<int, Day>();
@@ -29,6 +33,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
     {
         FoodDict = foodConfig.CreateFoodDictionary();
         DayDict = dayConfig.CreateDayDictionary();
+        MaxDay = DayDict.Values.Count;
 
         if (useDayInUserData)
         {
@@ -55,27 +60,36 @@ public class DayManager : Singleton<DayManager>, IOnStart
 
             foreach (FoodOrder foodOrder in passenger.FoodOrderList)
             {
-                Food food = FoodDict[foodOrder.FoodId];
-                int index = foodOrder.Quantity - 1;
-                waveCoin += food.Price * foodOrder.Quantity;
-                dayCoin += food.Price * foodOrder.Quantity;
-                //Debug.Log(food.Name);
-                //Debug.Log(index);
+                int id = foodOrder.FoodId;
+                int quantity = foodOrder.Quantity;
 
-                FoodController foodController = Instantiate(food.foodStacks[index], spawnFoodPoint);
+                Food food = FoodDict[id];
+                int index = quantity - 1;
+             
+              
+                //Instantiate(food.foodStacks[index], spawnFoodPoint);
 
                 FoodSpot foodSpot = GetFoodSpot();
                 if (foodSpot == null)
                 {
                     Debug.LogError("Can't have that many food at once !!!");
+                    yield break;
                 }
                 else
                 {
-                    foodController.SetFoodSpot(foodSpot, despawnFoodPoint, food.Id);
+                    if (!GameManager.Instance.CheckUnlockedFood(id))
+                    {
+                        GameUI.Instance.Get<UIUnlockFood>().Show();
+                        GameUI.Instance.Get<UIUnlockFood>().AddToShowList(food);
+                    }
+
+                    waveCoin += food.Price * quantity;
+                    dayCoin += food.Price * quantity;
+                    FoodController foodController = foodObjectPool.GetFood(id, quantity, food.foodStacks[index].gameObject, spawnFoodPoint);
+                    foodController.SetFoodSpot(foodSpot, despawnFoodPoint, id, quantity);
+                    currentFoodControllers.Add(foodController);
                     foodSpot.IsHadFood = true;
                 }
-
-                currentFoodControllers.Add(foodController);
             }
 
             WaveFinished = false;
@@ -102,8 +116,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
     {
         if(answer != waveCoin)
         {
-            GameManager.Instance.ChangeState(GameStates.Lose);
-            Reset();
+            StartCoroutine(EndGameResult(false));
             return;
         }
         foreach (FoodController controller in currentFoodControllers)
@@ -112,8 +125,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
         }
         if (isLastWave)
         {
-            GameManager.Instance.ChangeState(GameStates.Win);
-            Reset();
+            StartCoroutine(EndGameResult(true));
             return;
         }
 
@@ -130,5 +142,22 @@ public class DayManager : Singleton<DayManager>, IOnStart
         WaveFinished = true;
         isLastWave = false;
         currentFoodControllers.Clear();
+
+        dayIndex = GameManager.Instance.UserData.day;
+    }
+
+    IEnumerator EndGameResult(bool isWon)
+    {
+        yield return new WaitForSeconds(0.75f);
+
+        if (isWon)
+        {
+            GameManager.Instance.ChangeState(GameStates.Win);
+        }
+        else
+        {
+            GameManager.Instance.ChangeState(GameStates.Lose);
+        }
+        Reset();
     }
 }

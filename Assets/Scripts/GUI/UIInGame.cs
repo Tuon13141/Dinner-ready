@@ -170,7 +170,7 @@ public class UIInGame : UIElement
         
         number_1 = (result_1 + result_2).ToString();
         number_2 = "";
-        DisplayValueText(number_2);
+        DisplayValueText(number_1);
     }
 
     public void MinusButton()
@@ -187,7 +187,7 @@ public class UIInGame : UIElement
 
         number_1 = (result_1 - result_2).ToString();
         number_2 = "";
-        DisplayValueText(number_2);
+        DisplayValueText(number_1);
     }
 
     public void MutiplyButton()
@@ -204,7 +204,7 @@ public class UIInGame : UIElement
 
         number_1 = (result_1 * result_2).ToString();
         number_2 = "";
-        DisplayValueText(number_2);
+        DisplayValueText(number_1);
     }
 
     public void DivideButton()
@@ -221,7 +221,7 @@ public class UIInGame : UIElement
 
         number_1 = (result_1 / result_2).ToString();
         number_2 = "";
-        DisplayValueText(number_2);
+        DisplayValueText(number_1);
     }
     void DisplayValueText(string str)
     {

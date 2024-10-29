@@ -11,6 +11,7 @@ namespace Data
     {
         public int day;
         public int coin;
+        public List<int> unlockedFoodIdList = new List<int>();
     }
 
    

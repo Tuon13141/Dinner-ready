@@ -8,11 +8,11 @@ public class FoodController : MonoBehaviour
     [SerializeField] float moveTime = 0.5f;
     [SerializeField] FoodStage foodStage = FoodStage.None;
     Transform despawnFoodPoint;
-    public int FoodId { get; set; } 
+    public FoodControllerKey Key { get; set; } 
 
-    public void SetFoodSpot(FoodSpot foodSpot, Transform transform, int id)
+    public void SetFoodSpot(FoodSpot foodSpot, Transform transform, int id, int quantity)
     {
-        FoodId = id;
+        Key = new FoodControllerKey(id, quantity);
         despawnFoodPoint = transform;
         this.foodSpot = foodSpot;
         this.transform.parent = foodSpot.transform;
@@ -20,7 +20,7 @@ public class FoodController : MonoBehaviour
         ChangeState(FoodStage.OnWaitingToBill);
     }
 
-    private IEnumerator LerpPosition(Vector3 target, float duration)
+    private IEnumerator LerpPosition(Vector3 target, float duration, bool needToRemoveObjectPool = false)
     {
         Vector3 startPosition = transform.position;
         float timeElapsed = 0;
@@ -33,6 +33,10 @@ public class FoodController : MonoBehaviour
         }
 
         transform.position = target;
+        if (needToRemoveObjectPool)
+        {
+            DayManager.Instance.FoodObjectPool.RemoveFood(this);
+        }
     }
 
     public void ChangeState(FoodStage newState)
@@ -56,7 +60,7 @@ public class FoodController : MonoBehaviour
             case FoodStage.OnBilled:
                 transform.parent = despawnFoodPoint;
                 foodSpot.IsHadFood = false;
-                StartCoroutine(LerpPosition(despawnFoodPoint.position, moveTime));
+                StartCoroutine(LerpPosition(despawnFoodPoint.position, moveTime, true));
                 break;
             default:
                 break;

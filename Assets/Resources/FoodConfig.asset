@@ -37,13 +37,13 @@ MonoBehaviour:
     Price: 10
     DayUnlock: 1
     foodStacks:
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: -7594952378349075063, guid: d66ebf22eb5b1b648bd328f2ff02ff54, type: 3}
+    - {fileID: 6321073394782621133, guid: db21645d6bd21844092c3fc5dd5cb63b, type: 3}
   - Id: 3
     Name: Big Burger
     Icon: {fileID: 1657731146, guid: 64eca55c6e671ed4abf23e9434d2dcab, type: 3}
     Price: 55
     DayUnlock: 2
     foodStacks:
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: -9007602317421284550, guid: 840f727323424264a982bf2bbb2e40b1, type: 3}
+    - {fileID: -5269602377006242830, guid: bb5ce048039f5af41946463254bf2213, type: 3}

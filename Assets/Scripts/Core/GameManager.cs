@@ -60,6 +60,10 @@ public class GameManager : Singleton<GameManager>
                 if (DayManager.Instance.UseDayInUserData)
                 {
                     UserData.day = DayManager.Instance.DayIndex + 1;
+                    if(UserData.day >= DayManager.Instance.MaxDay)
+                    {
+                        UserData.day = DayManager.Instance.MaxDay - 1;
+                    }
                 }
               
                 GameUI.Instance.Get<UIInGame>().Hide();
@@ -104,7 +108,20 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-
+    public bool CheckUnlockedFood(int id)
+    {
+        if (UserData.unlockedFoodIdList.Contains(id))
+        {
+           
+            return true;
+        }
+        if (DayManager.Instance.UseDayInUserData)
+        {
+            UserData.unlockedFoodIdList.Add(id);
+        }
+    
+        return false;
+    }
     
 }
 
