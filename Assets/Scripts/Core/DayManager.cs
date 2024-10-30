@@ -8,6 +8,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
     [SerializeField] FoodConfig foodConfig;
     [SerializeField] FoodObjectPool foodObjectPool;
     public FoodObjectPool FoodObjectPool => foodObjectPool;
+    [SerializeField] PassengerManager passengerManager;
     [SerializeField] List<FoodSpot> foodSpots;
     [SerializeField] Transform spawnFoodPoint;
     [SerializeField] Transform despawnFoodPoint;
@@ -66,6 +67,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
         GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
         GameUI.Instance.Get<UIInGame>().SetDayText(dayIndex);
         spawnFoodCoroutine = StartCoroutine(SpawnFoodToTable(day));
+      
     }
 
     IEnumerator SpawnFoodToTable(Day day)
@@ -73,9 +75,9 @@ public class DayManager : Singleton<DayManager>, IOnStart
         foreach(Passenger passenger in day.PassengerList)
         {
             yield return new WaitUntil(() => WaveFinished);
-
+            passengerManager.GetRandomPassengerObject();
             yield return new WaitForSeconds(.5f);
-
+            
             foreach (FoodOrder foodOrder in passenger.FoodOrderList)
             {
                 int id = foodOrder.FoodId;
@@ -141,17 +143,21 @@ public class DayManager : Singleton<DayManager>, IOnStart
         {
             controller.ChangeState(FoodStage.OnBilled);
         }
+        
+
+        DayCoin += waveCoin;
+        GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
+        waveCoin = 0;
+
+        passengerManager.PassengerController.ChangeState(PassengerStage.OnWalkingOut);
+        //WaveFinished = true;
+        currentFoodControllers.Clear();
+
         if (isLastWave)
         {
             StartCoroutine(EndGameResult(true));
             return;
         }
-
-        DayCoin += waveCoin;
-        GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
-        waveCoin = 0;
-        WaveFinished = true;
-        currentFoodControllers.Clear();
     }
 
     void Reset(bool needToRemoveAllFood)

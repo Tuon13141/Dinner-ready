@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -29,6 +30,7 @@ public class UIInGame : UIElement
     [SerializeField] Button multiplyButton;
     [SerializeField] Button divideButton;
     [SerializeField] Button equalButton;
+    [SerializeField] Button undoButton;
 
     [SerializeField] Button decimalButton;
 
@@ -64,6 +66,11 @@ public class UIInGame : UIElement
         {
             numberButton.UIInGame = this;
         }
+    }
+
+    public void UndoButton()
+    {
+        Reset();
     }
 
     public void DecimalButton()
@@ -208,7 +215,7 @@ public class UIInGame : UIElement
 
         float result_1 = ConvertStringToFloat(number_1);
         float result_2 = ConvertStringToFloat(number_2);
-
+      
         number_1 = (result_1 * result_2).ToString();
         number_2 = "";
         DisplayValueText(number_1);
@@ -232,7 +239,7 @@ public class UIInGame : UIElement
         float result_2 = ConvertStringToFloat(number_2);
 
         number_1 = (result_1 / result_2).ToString();
-        number_2 = "";
+      
         DisplayValueText(number_1);
     }
 
@@ -272,6 +279,10 @@ public class UIInGame : UIElement
         else
         {
             result_1 = 0f;
+            if (mathematicalType == MathematicalType.Mutiply || mathematicalType == MathematicalType.Divide)
+            {
+                result_1 = 1;
+            }
         }
 
         return result_1;
@@ -285,17 +296,44 @@ public class UIInGame : UIElement
         minusButton.onClick.AddListener(MinusButton);
         multiplyButton.onClick.AddListener(MutiplyButton);
         divideButton.onClick.AddListener(DivideButton);
+        undoButton.onClick.AddListener(UndoButton);
     }
 
+    Coroutine sliderCoroutine;
     public void SetProgress(float a, float b)
     {
         progressText.text = a.ToString() + "/" + b.ToString();
-        slider.fillAmount = a / b;
-    }
 
+        if(sliderCoroutine != null) StopCoroutine(sliderCoroutine);
+        sliderCoroutine = StartCoroutine(AnimateFillAmount(a / b));
+    }
+    private IEnumerator AnimateFillAmount(float targetFillAmount)
+    {
+        float startFillAmount = slider.fillAmount;
+        float duration = 0.5f; 
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            slider.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, elapsed / duration);
+            yield return null; 
+        }
+
+        slider.fillAmount = targetFillAmount; 
+    }
     public void SetDayText(int day)
     {
         dayText.text = "Day " + (day + 1).ToString();
+    }
+
+    private void Reset()
+    {
+        number_1 = "";
+        number_2 = "";
+        caculatorStage = CaculatorStage.FirstEnter;
+        mathematicalType = MathematicalType.None;
+        DisplayValueText("0");
     }
 }
 

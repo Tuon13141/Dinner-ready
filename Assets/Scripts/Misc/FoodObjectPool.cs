@@ -12,7 +12,7 @@ public class FoodObjectPool : MonoBehaviour
         FoodControllerKey key = new FoodControllerKey(id, quantity);
         if (!InativeFoods.ContainsKey(key))
         {
-            Debug.Log(1);
+            //Debug.Log(1);
             FoodController foodController = Instantiate(pref, parent).GetComponent<FoodController>();
             if (!ActiveFoods.ContainsKey(key))
             {
@@ -28,7 +28,7 @@ public class FoodObjectPool : MonoBehaviour
         }
         else
         {
-            Debug.Log(2);
+            //Debug.Log(2);
             FoodController foodController = InativeFoods[key][0];
             InativeFoods[key].Remove(foodController);
 
