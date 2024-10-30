@@ -28,7 +28,10 @@ public class DayManager : Singleton<DayManager>, IOnStart
     bool isLastWave = false;
 
     float waveCoin = 0;
-    float dayCoin = 0;
+    public float DayCoin { get; private set; } = 0;
+    public float TotalDayCoin { get; private set; } = 0;
+
+    Coroutine spawnFoodCoroutine;
     public void OnStart()
     {
         FoodDict = foodConfig.CreateFoodDictionary();
@@ -41,13 +44,28 @@ public class DayManager : Singleton<DayManager>, IOnStart
         }
     }
 
-    public void LoadDay()
+    public void LoadDay(bool needToRemoveAllFood = false)
     {
+        Reset(needToRemoveAllFood);
         GameUI.Instance.Get<UIInGame>().Show();
 
         Day day = DayDict[dayIndex];
 
-        StartCoroutine(SpawnFoodToTable(day));
+        foreach (Passenger passenger in day.PassengerList)
+        {
+            foreach (FoodOrder foodOrder in passenger.FoodOrderList)
+            {
+                int id = foodOrder.FoodId;
+                int quantity = foodOrder.Quantity;
+
+                Food food = FoodDict[id];
+                TotalDayCoin += food.Price * quantity;
+            }
+        }
+
+        GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
+        GameUI.Instance.Get<UIInGame>().SetDayText(dayIndex);
+        spawnFoodCoroutine = StartCoroutine(SpawnFoodToTable(day));
     }
 
     IEnumerator SpawnFoodToTable(Day day)
@@ -84,7 +102,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
                     }
 
                     waveCoin += food.Price * quantity;
-                    dayCoin += food.Price * quantity;
+                   
                     FoodController foodController = foodObjectPool.GetFood(id, quantity, food.foodStacks[index].gameObject, spawnFoodPoint);
                     foodController.SetFoodSpot(foodSpot, despawnFoodPoint, id, quantity);
                     currentFoodControllers.Add(foodController);
@@ -129,35 +147,49 @@ public class DayManager : Singleton<DayManager>, IOnStart
             return;
         }
 
-        
+        DayCoin += waveCoin;
+        GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
         waveCoin = 0;
         WaveFinished = true;
-        
+        currentFoodControllers.Clear();
     }
 
-    void Reset()
+    void Reset(bool needToRemoveAllFood)
     {
+        if (needToRemoveAllFood)
+        {
+            foodObjectPool.RemoveAllFood();
+        }
+
+        if(spawnFoodCoroutine != null) StopCoroutine(spawnFoodCoroutine);
         waveCoin = 0;
-        dayCoin = 0;
+        TotalDayCoin = 0;
+        DayCoin = 0;
         WaveFinished = true;
         isLastWave = false;
         currentFoodControllers.Clear();
 
         dayIndex = GameManager.Instance.UserData.day;
+
+        foreach(FoodSpot foodSpot in foodSpots)
+        {
+            foodSpot.IsHadFood = false;
+        }
     }
 
     IEnumerator EndGameResult(bool isWon)
     {
-        yield return new WaitForSeconds(0.75f);
 
         if (isWon)
         {
+            yield return new WaitForSeconds(0.75f);
             GameManager.Instance.ChangeState(GameStates.Win);
         }
         else
         {
+            yield return new WaitForSeconds(0.25f);
             GameManager.Instance.ChangeState(GameStates.Lose);
         }
-        Reset();
+       
     }
 }

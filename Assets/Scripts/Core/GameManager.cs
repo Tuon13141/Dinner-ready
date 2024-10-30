@@ -54,7 +54,7 @@ public class GameManager : Singleton<GameManager>
               
                 break;
             case GameStates.Retry:
-                DayManager.Instance.LoadDay();
+                DayManager.Instance.LoadDay(true);
                 break;
             case GameStates.Win:
                 if (DayManager.Instance.UseDayInUserData)
@@ -122,7 +122,6 @@ public class GameManager : Singleton<GameManager>
     
         return false;
     }
-    
 }
 
 public enum GameStates

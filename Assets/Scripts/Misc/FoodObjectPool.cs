@@ -12,6 +12,7 @@ public class FoodObjectPool : MonoBehaviour
         FoodControllerKey key = new FoodControllerKey(id, quantity);
         if (!InativeFoods.ContainsKey(key))
         {
+            Debug.Log(1);
             FoodController foodController = Instantiate(pref, parent).GetComponent<FoodController>();
             if (!ActiveFoods.ContainsKey(key))
             {
@@ -27,6 +28,7 @@ public class FoodObjectPool : MonoBehaviour
         }
         else
         {
+            Debug.Log(2);
             FoodController foodController = InativeFoods[key][0];
             InativeFoods[key].Remove(foodController);
 
@@ -73,7 +75,22 @@ public class FoodObjectPool : MonoBehaviour
             else
             {
                 InativeFoods[key].Add(foodController);
-                foodController.gameObject.SetActive(false);
+              
+            }
+            foodController.Reset();
+            foodController.gameObject.SetActive(false);
+        }
+    }
+
+    public void RemoveAllFood()
+    {
+        //Debug.Log("Remove All Food !!!");
+        foreach (List<FoodController> value in ActiveFoods.Values)
+        {
+            for (int i = 0; i < value.Count; i++)
+            {
+                //Debug.Log(value[i].gameObject.name);
+                RemoveFood(value[i]);
             }
         }
     }

@@ -37,6 +37,11 @@ public class UIInGame : UIElement
 
     [SerializeField] CaculatorStage caculatorStage = CaculatorStage.FirstEnter;
     [SerializeField] MathematicalType mathematicalType = MathematicalType.Plus;
+
+    [SerializeField] TextMeshProUGUI progressText;
+    [SerializeField] Image slider;
+
+    [SerializeField] TextMeshProUGUI dayText;
     public override void Show()
     {
         base.Show();
@@ -70,7 +75,7 @@ public class UIInGame : UIElement
                 number_1 = "";
                 mathematicalType = MathematicalType.Plus;
             }
-            if (number_1.Length < 11 && number_1.Length > 1 && !number_1.Contains("."))
+            if (number_1.Length < 11 && number_1.Length > 0 && !number_1.Contains("."))
             {
                 number_1 += ".";
            
@@ -83,7 +88,7 @@ public class UIInGame : UIElement
         }
         else
         {
-            if (number_2.Length < 11 && number_2.Length > 1 && !number_2.Contains("."))
+            if (number_2.Length < 11 && number_2.Length > 0 && !number_2.Contains("."))
             {
                 number_2 += ".";
                 
@@ -132,21 +137,7 @@ public class UIInGame : UIElement
 
     public void EqualButton()
     {
-        switch (mathematicalType)
-        {
-            case MathematicalType.Plus:
-                PlusButton();
-                break;
-            case MathematicalType.Minus:
-                MinusButton();
-                break;
-            case MathematicalType.Mutiply:
-                MutiplyButton();
-                break;
-            case MathematicalType.Divide:
-                DivideButton();
-                break;
-        }
+        CaculateLastMath();
         DisplayValueText(number_1);
   
         number_2 = "";
@@ -158,8 +149,14 @@ public class UIInGame : UIElement
     }
     public void PlusButton()
     {
+        CaculateLastMath();
+        Plus();
+    }
+
+    void Plus()
+    {
         mathematicalType = MathematicalType.Plus;
-        if(caculatorStage == CaculatorStage.FirstEnter)
+        if (caculatorStage == CaculatorStage.FirstEnter)
         {
             caculatorStage = CaculatorStage.SecondEnter;
             return;
@@ -167,13 +164,18 @@ public class UIInGame : UIElement
 
         float result_1 = ConvertStringToFloat(number_1);
         float result_2 = ConvertStringToFloat(number_2);
-        
+
         number_1 = (result_1 + result_2).ToString();
         number_2 = "";
         DisplayValueText(number_1);
     }
-
     public void MinusButton()
+    {
+        CaculateLastMath();
+        Minus();
+    }
+
+    void Minus()
     {
         mathematicalType = MathematicalType.Minus;
         if (caculatorStage == CaculatorStage.FirstEnter)
@@ -189,8 +191,13 @@ public class UIInGame : UIElement
         number_2 = "";
         DisplayValueText(number_1);
     }
-
     public void MutiplyButton()
+    {
+        CaculateLastMath();
+        Mutiply();
+    }
+
+    void Mutiply()
     {
         mathematicalType = MathematicalType.Mutiply;
         if (caculatorStage == CaculatorStage.FirstEnter)
@@ -206,8 +213,13 @@ public class UIInGame : UIElement
         number_2 = "";
         DisplayValueText(number_1);
     }
-
     public void DivideButton()
+    {
+        CaculateLastMath();
+        Divide();
+    }
+
+    void Divide()
     {
         mathematicalType = MathematicalType.Divide;
         if (caculatorStage == CaculatorStage.FirstEnter)
@@ -222,6 +234,27 @@ public class UIInGame : UIElement
         number_1 = (result_1 / result_2).ToString();
         number_2 = "";
         DisplayValueText(number_1);
+    }
+
+    void CaculateLastMath()
+    {
+        switch (mathematicalType)
+        {
+            case MathematicalType.Plus:
+                Plus();
+                break;
+            case MathematicalType.Minus:
+                Minus();
+                break;
+            case MathematicalType.Mutiply:
+                Mutiply();
+                break;
+            case MathematicalType.Divide:
+                Divide();
+                break;
+            default:
+                break;
+        }
     }
     void DisplayValueText(string str)
     {
@@ -252,6 +285,17 @@ public class UIInGame : UIElement
         minusButton.onClick.AddListener(MinusButton);
         multiplyButton.onClick.AddListener(MutiplyButton);
         divideButton.onClick.AddListener(DivideButton);
+    }
+
+    public void SetProgress(float a, float b)
+    {
+        progressText.text = a.ToString() + "/" + b.ToString();
+        slider.fillAmount = a / b;
+    }
+
+    public void SetDayText(int day)
+    {
+        dayText.text = "Day " + (day + 1).ToString();
     }
 }
 

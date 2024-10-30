@@ -8,14 +8,14 @@ public class Game : MonoBehaviour
     public static GameUpdate Update { get; private set; }
     //public static InAppPurchase Purchase { get; private set; }
     public static bool IsLaunched { get; private set; }
-    //private void OnApplicationQuit()
-    //{
-    //    Data.SaveAll();
-    //}
-    //private void OnApplicationPause(bool pause)
-    //{
-    //    if (pause) Data.SaveAll();
-    //}
+    private void OnApplicationQuit()
+    {
+        //Data.SaveAll();
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        //if (pause) Data.SaveAll();
+    }
     public static void Launch()
     {
         if (IsLaunched) return;

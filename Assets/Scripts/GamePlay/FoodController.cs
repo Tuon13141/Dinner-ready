@@ -33,6 +33,7 @@ public class FoodController : MonoBehaviour
         }
 
         transform.position = target;
+        yield return null;
         if (needToRemoveObjectPool)
         {
             DayManager.Instance.FoodObjectPool.RemoveFood(this);
@@ -84,6 +85,10 @@ public class FoodController : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        foodStage = FoodStage.None;
+    }
 }
 
 [Serializable]
