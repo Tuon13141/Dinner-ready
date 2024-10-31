@@ -46,11 +46,11 @@ public class DayManager : Singleton<DayManager>, IOnStart
         }
     }
 
-    public void LoadDay(bool needToRemoveAllFood = false)
+    public void LoadDay(bool isRetry = false)
     {
-        Reset(needToRemoveAllFood);
+        Reset(isRetry);
         passengerManager.CurrentPassengerController.Reset();
-        passengerManager.NextPassengerController.Reset();
+        passengerManager.NextPassengerController.Reset(isRetry);
         GameUI.Instance.Get<UIInGame>().Show();
 
         Day day = DayDict[dayIndex];

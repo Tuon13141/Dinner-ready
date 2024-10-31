@@ -140,7 +140,7 @@ public class NextPassengerController : MonoBehaviour
         passengerStage = PassengerStage.None;
     }
 
-    public void Reset()
+    public void Reset(bool isRetry = false)
     {
         if (!firstLoad)
         {
@@ -149,7 +149,7 @@ public class NextPassengerController : MonoBehaviour
                 dayManager.FoodObjectPool.RemovePassenger(nextPassengerObject, nextPassengerKey.Gender, nextPassengerKey.Id);
             }
             
-            firstLoad = true;
+            if(!isRetry) firstLoad = true;
             currentPassengerController.SetFirstLoad(true);
         }
        

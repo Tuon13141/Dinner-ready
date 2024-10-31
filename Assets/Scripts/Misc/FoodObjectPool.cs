@@ -33,7 +33,10 @@ public class FoodObjectPool : MonoBehaviour
             //Debug.Log(2);
             FoodController foodController = InativeFoods[key][0];
             InativeFoods[key].Remove(foodController);
-
+            if (InativeFoods[key].Count == 0)
+            {
+                InativeFoods.Remove(key);
+            }
             foodController.gameObject.SetActive(true);
             if (!ActiveFoods.ContainsKey(key))
             {
@@ -121,6 +124,10 @@ public class FoodObjectPool : MonoBehaviour
             
             GameObject passengerObject = InactivePassengers[key][0];
             InactivePassengers[key].Remove(passengerObject);
+            if (InactivePassengers[key].Count == 0)
+            {
+                InactivePassengers.Remove(key);
+            }
 
             passengerObject.gameObject.SetActive(true);
             if (!ActivePassengers.ContainsKey(key))
