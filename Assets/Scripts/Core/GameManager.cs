@@ -69,6 +69,8 @@ public class GameManager : Singleton<GameManager>
                 GameUI.Instance.Get<UIInGame>().Hide();
                 GameUI.Instance.Get<UIWin>().Show();
                 GameUI.Instance.Get<UIWin>().SetCoinText(DayManager.Instance.TotalDayCoin);
+                GameUI.Instance.Get<UIWin>().SetDayText(DayManager.Instance.DayIndex + 1);
+                GameUI.Instance.Get<UIWin>().SetVisitorText(DayManager.Instance.TotalDayVisitor);
                 break;
             case GameStates.Lose:
                 GameUI.Instance.Get<UIInGame>().Hide();

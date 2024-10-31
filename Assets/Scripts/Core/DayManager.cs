@@ -26,11 +26,12 @@ public class DayManager : Singleton<DayManager>, IOnStart
     List<FoodController> currentFoodControllers = new List<FoodController>();
 
     public bool WaveFinished { get; set; } = true;
-    bool isLastWave = false;
-
+    bool isFinishAllWaves = false;
+    public bool IsLastWave { get; set; } = false;   
     float waveCoin = 0;
     public float DayCoin { get; private set; } = 0;
     public float TotalDayCoin { get; private set; } = 0;
+    public float TotalDayVisitor { get; private set; } = 0;
 
     Coroutine spawnFoodCoroutine;
     public void OnStart()
@@ -48,6 +49,8 @@ public class DayManager : Singleton<DayManager>, IOnStart
     public void LoadDay(bool needToRemoveAllFood = false)
     {
         Reset(needToRemoveAllFood);
+        passengerManager.CurrentPassengerController.Reset();
+        passengerManager.NextPassengerController.Reset();
         GameUI.Instance.Get<UIInGame>().Show();
 
         Day day = DayDict[dayIndex];
@@ -62,21 +65,29 @@ public class DayManager : Singleton<DayManager>, IOnStart
                 Food food = FoodDict[id];
                 TotalDayCoin += food.Price * quantity;
             }
+            TotalDayVisitor++;
         }
 
         GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
         GameUI.Instance.Get<UIInGame>().SetDayText(dayIndex);
         spawnFoodCoroutine = StartCoroutine(SpawnFoodToTable(day));
-      
+        passengerManager.GetRandomPassengerObject();
+        
     }
 
     IEnumerator SpawnFoodToTable(Day day)
     {
-        foreach(Passenger passenger in day.PassengerList)
+        for(int i = 0; i < day.PassengerList.Count; i++)
         {
+            Passenger passenger = day.PassengerList[i];
+           
             yield return new WaitUntil(() => WaveFinished);
-            passengerManager.GetRandomPassengerObject();
-            yield return new WaitForSeconds(.5f);
+            passengerManager.CurrentPassengerController.nextPassenger = true;
+            if (i == day.PassengerList.Count - 1)
+            {
+                IsLastWave = true;
+            }
+            yield return new WaitForSeconds(.25f);
             
             foreach (FoodOrder foodOrder in passenger.FoodOrderList)
             {
@@ -115,7 +126,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
             WaveFinished = false;
         }
 
-        isLastWave = true;
+        isFinishAllWaves = true;
 
     }
 
@@ -150,11 +161,11 @@ public class DayManager : Singleton<DayManager>, IOnStart
         GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
         waveCoin = 0;
 
-        passengerManager.PassengerController.ChangeState(PassengerStage.OnWalkingOut);
+        passengerManager.CurrentPassengerController.ChangeState(PassengerStage.OnWalkingOut);
         //WaveFinished = true;
         currentFoodControllers.Clear();
 
-        if (isLastWave)
+        if (isFinishAllWaves)
         {
             StartCoroutine(EndGameResult(true));
             return;
@@ -174,9 +185,9 @@ public class DayManager : Singleton<DayManager>, IOnStart
         TotalDayCoin = 0;
         DayCoin = 0;
         WaveFinished = true;
-        isLastWave = false;
+        isFinishAllWaves = false;
         currentFoodControllers.Clear();
-
+        IsLastWave = false;
         dayIndex = GameManager.Instance.UserData.day;
 
         foreach(FoodSpot foodSpot in foodSpots)

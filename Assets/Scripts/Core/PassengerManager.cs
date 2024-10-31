@@ -7,8 +7,10 @@ public class PassengerManager : MonoBehaviour
     [SerializeField] List<GameObject> malePassengers = new List<GameObject>();
     [SerializeField] List<GameObject> femalePassengers = new List<GameObject>();
 
-    [SerializeField] PassengerController passengerController;
-    public PassengerController PassengerController => passengerController;
+    [SerializeField] CurrentPassengerController currentPassengerController;
+    [SerializeField] NextPassengerController nextPassengerController;
+    public CurrentPassengerController CurrentPassengerController => currentPassengerController;
+    public NextPassengerController NextPassengerController => nextPassengerController;
 
     [SerializeField] DayManager dayManager;
     public DayManager DayManager => dayManager;
@@ -27,7 +29,7 @@ public class PassengerManager : MonoBehaviour
             //SkinSelector.SkinSelector skinSelector = passengerObj.GetComponent<SkinSelector.SkinSelector>();
             //GlassesSelector.GlassesSelector glassesSelector = passengerObj.GetComponent <GlassesSelector.GlassesSelector>();
 
-            passengerController.SetPassengerPrefab(passengerObj, gender, choice);
+            nextPassengerController.SetPassengerPrefab(passengerObj, gender, choice);
         }
         else
         {
@@ -35,7 +37,7 @@ public class PassengerManager : MonoBehaviour
             int choice = Random.Range(0, femalePassengers.Count);
             GameObject passengerObj = femalePassengers[choice];
 
-            passengerController.SetPassengerPrefab(passengerObj, gender, choice);
+            nextPassengerController.SetPassengerPrefab(passengerObj, gender, choice);
         }
     }
 }

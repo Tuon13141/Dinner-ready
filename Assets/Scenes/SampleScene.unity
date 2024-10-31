@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 285684944}
   - component: {fileID: 285684945}
   m_Layer: 0
-  m_Name: Passenger
+  m_Name: Current Passenger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -292,19 +292,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 285684943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f3f54185b430d4bbb8db55209d581e, type: 3}
+  m_Script: {fileID: 11500000, guid: 34e7ae77fc80ba2498b2cafb869e22cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dayManager: {fileID: 1746393217}
+  nextPassengerController: {fileID: 841747248}
   m_animator: {fileID: 0}
   currentPassengerObject: {fileID: 0}
   currentPassengerKey:
     Gender: 0
     Id: 0
   passengerStage: 0
-  spawnPoint: {fileID: 538152755}
-  waitPoint: {fileID: 2091890129}
+  waitForTurnPoint: {fileID: 971574894}
+  waitForBillPoint: {fileID: 2091890129}
   despawnPoint: {fileID: 413014074}
+  nextPassenger: 1
 --- !u!1 &308519162
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,7 +831,8 @@ MonoBehaviour:
   - {fileID: 361793395370285056, guid: 721e3fb3f6957fd4bbdce013c5093c1b, type: 3}
   - {fileID: 8589802185506101266, guid: 7c520e599448bb746918d211b982278c, type: 3}
   - {fileID: 6595388564667796, guid: 8eb6b44c2833c96499c4d3aeb483b59d, type: 3}
-  passengerController: {fileID: 285684945}
+  currentPassengerController: {fileID: 285684945}
+  nextPassengerController: {fileID: 841747248}
   dayManager: {fileID: 1746393217}
 --- !u!1 &500883566
 GameObject:
@@ -1240,6 +1243,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 538152755}
+  - {fileID: 971574894}
   - {fileID: 2091890129}
   - {fileID: 413014074}
   m_Father: {fileID: 0}
@@ -1533,6 +1537,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &841747247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 841747249}
+  - component: {fileID: 841747248}
+  m_Layer: 0
+  m_Name: Next Passenger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &841747248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841747247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b05cdb6b92d415c44b8aadfd6e1f8e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayManager: {fileID: 1746393217}
+  passengerManager: {fileID: 497104568}
+  currentPassengerController: {fileID: 285684945}
+  m_animator: {fileID: 0}
+  nextPassengerObject: {fileID: 0}
+  nextPassengerKey:
+    Gender: 0
+    Id: 0
+  passengerStage: 0
+  spawnPoint: {fileID: 538152755}
+  waitForTurnPoint: {fileID: 971574894}
+--- !u!4 &841747249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841747247}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.02, y: -1.17, z: -6.37}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &914234934
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,6 +1710,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &971574893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 971574894}
+  m_Layer: 0
+  m_Name: Wait For Turn Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &971574894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971574893}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: -1.48, y: -1.17, z: -5.67}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 624965968}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &989103208
 GameObject:
   m_ObjectHideFlags: 0
@@ -2340,7 +2430,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2091890129}
   m_Layer: 0
-  m_Name: Wait Point
+  m_Name: Wait For Biil Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2374,6 +2464,7 @@ SceneRoots:
   - {fileID: 989103210}
   - {fileID: 1448606897}
   - {fileID: 285684944}
+  - {fileID: 841747249}
   - {fileID: 1442237644}
   - {fileID: 624965968}
   - {fileID: 2054436993}
