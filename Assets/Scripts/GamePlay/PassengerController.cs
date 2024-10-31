@@ -8,6 +8,7 @@ public class PassengerController : MonoBehaviour
     [SerializeField] DayManager dayManager;
     [SerializeField] Animator m_animator;
     [SerializeField] GameObject currentPassengerObject;
+    [SerializeField] PassengerObjectKey currentPassengerKey;
     [SerializeField] PassengerStage passengerStage = PassengerStage.None;
 
     [SerializeField] Transform spawnPoint;
@@ -15,10 +16,11 @@ public class PassengerController : MonoBehaviour
     [SerializeField] Transform despawnPoint;
 
     Coroutine coroutine;
-    public void SetPassengerPrefab(GameObject passengerPref)
+    public void SetPassengerPrefab(GameObject passengerPref, int gender, int id)
     {
         Reset();
-        currentPassengerObject = Instantiate(passengerPref, transform);
+        currentPassengerKey = new PassengerObjectKey(gender, id);
+        currentPassengerObject = dayManager.FoodObjectPool.GetPassenger(gender, id, passengerPref, this.transform);
 
         m_animator = currentPassengerObject.GetComponent<Animator>();
         ChangeState(PassengerStage.OnWalkingIn);
@@ -60,7 +62,7 @@ public class PassengerController : MonoBehaviour
         {
             StopCoroutine(coroutine);
         }        
-        Debug.Log(1);
+        
         m_animator.SetTrigger("Idle");
 
         coroutine = StartCoroutine(MoveAndRotate(waitPoint.position, 0f, 90, 0.25f));
@@ -75,12 +77,13 @@ public class PassengerController : MonoBehaviour
 
      
         transform.position = spawnPoint.position;
-        //m_animator.SetTrigger("Walk");
+        m_animator.SetTrigger("Walk");
         coroutine = StartCoroutine(MoveAndRotate(waitPoint.position, 1f, 90, 0.25f));
     }
 
     void OnWalkingOut()
     {
+        UIAnimationManager.Instance.PlayHappyEmoji();
         if(coroutine != null)
         {
             StopCoroutine(coroutine);
@@ -139,10 +142,10 @@ public class PassengerController : MonoBehaviour
 
     private void Reset()
     {
-        transform.rotation = transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
         coroutine = null;
         m_animator = null;
-        Destroy(currentPassengerObject);
+        dayManager.FoodObjectPool.RemovePassenger(currentPassengerObject, currentPassengerKey.Gender, currentPassengerKey.Id);
         passengerStage = PassengerStage.None;
     }
 }

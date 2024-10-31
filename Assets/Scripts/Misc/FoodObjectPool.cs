@@ -7,6 +7,8 @@ public class FoodObjectPool : MonoBehaviour
     public Dictionary<FoodControllerKey, List<FoodController>> ActiveFoods = new Dictionary<FoodControllerKey, List<FoodController>>();
     public Dictionary<FoodControllerKey, List<FoodController>> InativeFoods = new Dictionary<FoodControllerKey, List<FoodController>>();
 
+    public Dictionary<PassengerObjectKey, List<GameObject>> ActivePassengers = new Dictionary<PassengerObjectKey, List<GameObject>>();
+    public Dictionary<PassengerObjectKey, List<GameObject>> InactivePassengers = new Dictionary<PassengerObjectKey, List<GameObject>>();
     public FoodController GetFood(int id, int quantity, GameObject pref, Transform parent)
     {
         FoodControllerKey key = new FoodControllerKey(id, quantity);
@@ -94,6 +96,93 @@ public class FoodObjectPool : MonoBehaviour
             }
         }
     }
+
+    public GameObject GetPassenger(int gender, int id, GameObject pref, Transform parent)
+    {
+        PassengerObjectKey key = new PassengerObjectKey(gender, id);
+        if (!InactivePassengers.ContainsKey(key))
+        {
+           
+            GameObject passengerObject = Instantiate(pref, parent);
+            if (!ActivePassengers.ContainsKey(key))
+            {
+                List<GameObject> list = new List<GameObject>();
+                list.Add(passengerObject);
+                ActivePassengers.Add(key, list);
+            }
+            else
+            {
+                ActivePassengers[key].Add(passengerObject);
+            }
+            return passengerObject;
+        }
+        else
+        {
+            
+            GameObject passengerObject = InactivePassengers[key][0];
+            InactivePassengers[key].Remove(passengerObject);
+
+            passengerObject.gameObject.SetActive(true);
+            if (!ActivePassengers.ContainsKey(key))
+            {
+                List<GameObject> list = new List<GameObject>();
+                list.Add(passengerObject);
+                ActivePassengers.Add(key, list);
+            }
+            else
+            {
+                ActivePassengers[key].Add(passengerObject);
+            }
+            passengerObject.gameObject.transform.parent = parent;
+            passengerObject.transform.position = parent.transform.position;
+
+            return passengerObject;
+        }
+    }
+
+    public void RemovePassenger(GameObject passengerObject, int gender, int id)
+    {
+        PassengerObjectKey key = new PassengerObjectKey(gender, id);
+
+        if (!ActivePassengers.ContainsKey(key))
+        {
+            Debug.Log("Key don't exits !!!");
+        }
+        else
+        {
+            if (!ActivePassengers[key].Contains(passengerObject))
+            {
+                Debug.Log("Key don't contain it !!!");
+                return;
+            }
+
+            ActivePassengers[key].Remove(passengerObject);
+            if (!InactivePassengers.ContainsKey(key))
+            {
+                List<GameObject> list = new List<GameObject>();
+                list.Add(passengerObject);
+                InactivePassengers.Add(key, list);
+            }
+            else
+            {
+                InactivePassengers[key].Add(passengerObject);
+
+            }
+
+            passengerObject.gameObject.SetActive(false);
+        }
+    }
+
+    public void RemoveAllPassenger()
+    {
+        foreach(PassengerObjectKey key in ActivePassengers.Keys)
+        {
+            for (int i = 0; i < ActivePassengers[key].Count; i++)
+            {
+                RemovePassenger(ActivePassengers[key][i], key.Gender, key.Id);
+            }
+        }
+    }
 }
 
 [Serializable]
@@ -133,5 +222,32 @@ public class FoodControllerKey
     public override int GetHashCode()
     {
         return Id.GetHashCode() ^ Quantity.GetHashCode();
+    }
+}
+
+[Serializable]
+public class PassengerObjectKey
+{
+    public int Gender;
+    public int Id;
+
+    public PassengerObjectKey(int gender, int id)
+    {
+        Gender = gender;
+        Id = id;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is PassengerObjectKey other)
+        {
+            return Id == other.Id && Gender == other.Gender;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode() ^ Gender.GetHashCode();
     }
 }

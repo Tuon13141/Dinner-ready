@@ -136,6 +136,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
     {
         if(answer != waveCoin)
         {
+            UIAnimationManager.Instance.PlayAngryEmoji();
             StartCoroutine(EndGameResult(false));
             return;
         }
@@ -162,6 +163,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
 
     void Reset(bool needToRemoveAllFood)
     {
+        UIAnimationManager.Instance.StopAngryEmoji();
         if (needToRemoveAllFood)
         {
             foodObjectPool.RemoveAllFood();

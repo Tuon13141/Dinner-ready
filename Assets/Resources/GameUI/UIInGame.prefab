@@ -3804,4 +3804,5 @@ MonoBehaviour:
   mathematicalType: 0
   progressText: {fileID: 7491580512531787394}
   slider: {fileID: 1598487531818665436}
+  progressPanel: {fileID: 1885571176681826688}
   dayText: {fileID: 4525585526664464657}

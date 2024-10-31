@@ -27,7 +27,7 @@ public class PassengerManager : MonoBehaviour
             //SkinSelector.SkinSelector skinSelector = passengerObj.GetComponent<SkinSelector.SkinSelector>();
             //GlassesSelector.GlassesSelector glassesSelector = passengerObj.GetComponent <GlassesSelector.GlassesSelector>();
 
-            passengerController.SetPassengerPrefab(passengerObj);
+            passengerController.SetPassengerPrefab(passengerObj, gender, choice);
         }
         else
         {
@@ -35,7 +35,7 @@ public class PassengerManager : MonoBehaviour
             int choice = Random.Range(0, femalePassengers.Count);
             GameObject passengerObj = femalePassengers[choice];
 
-            passengerController.SetPassengerPrefab(passengerObj);
+            passengerController.SetPassengerPrefab(passengerObj, gender, choice);
         }
     }
 }

@@ -1,5 +1,4 @@
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +41,7 @@ public class UIInGame : UIElement
 
     [SerializeField] TextMeshProUGUI progressText;
     [SerializeField] Image slider;
+    [SerializeField] GameObject progressPanel;
 
     [SerializeField] TextMeshProUGUI dayText;
     public override void Show()
@@ -310,17 +310,35 @@ public class UIInGame : UIElement
     private IEnumerator AnimateFillAmount(float targetFillAmount)
     {
         float startFillAmount = slider.fillAmount;
-        float duration = 0.5f; 
-        float elapsed = 0f;
+        float fillDuration = 0.5f;
+        float fillElapsed = 0f;
 
-        while (elapsed < duration)
+        Vector3 startScale = progressPanel.transform.localScale; 
+        Vector3 targetScale = new Vector3(1.1f, 1.1f, 1.1f); 
+        Vector3 endScale = Vector3.one; 
+        float scaleDuration = 0.5f; 
+        float scaleElapsed = 0f;
+
+        while (fillElapsed < fillDuration || scaleElapsed < scaleDuration)
         {
-            elapsed += Time.deltaTime;
-            slider.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, elapsed / duration);
+            if (fillElapsed < fillDuration)
+            {
+                fillElapsed += Time.deltaTime;
+                slider.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, fillElapsed / fillDuration);
+            }
+
+            if (scaleElapsed < scaleDuration)
+            {
+                scaleElapsed += Time.deltaTime;
+                progressPanel.transform.localScale = Vector3.Lerp(startScale, targetScale, scaleElapsed / scaleDuration);
+            }
+
             yield return null; 
         }
 
-        slider.fillAmount = targetFillAmount; 
+
+        slider.fillAmount = targetFillAmount;
+        progressPanel.transform.localScale = endScale; 
     }
     public void SetDayText(int day)
     {
@@ -335,6 +353,7 @@ public class UIInGame : UIElement
         mathematicalType = MathematicalType.None;
         DisplayValueText("0");
     }
+
 }
 
 [Serializable]
