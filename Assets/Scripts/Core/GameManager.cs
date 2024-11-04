@@ -44,6 +44,7 @@ public class GameManager : Singleton<GameManager>
         switch (_state)
         {
             case GameStates.Tutorial:
+                GameUI.Instance.Get<UITutorial>().Show();
                 break;
             case GameStates.Home:
                 break;
@@ -70,7 +71,7 @@ public class GameManager : Singleton<GameManager>
                 GameUI.Instance.Get<UIWin>().Show();
                 GameUI.Instance.Get<UIWin>().SetCoinText(DayManager.Instance.TotalDayCoin);
                 GameUI.Instance.Get<UIWin>().SetDayText(DayManager.Instance.DayIndex + 1);
-                GameUI.Instance.Get<UIWin>().SetVisitorText(DayManager.Instance.TotalDayVisitor);
+                GameUI.Instance.Get<UIWin>().SetVisitorText(DayManager.Instance.TotalDayPassenger);
                 break;
             case GameStates.Lose:
                 GameUI.Instance.Get<UIInGame>().Hide();
@@ -124,6 +125,11 @@ public class GameManager : Singleton<GameManager>
         }
     
         return false;
+    }
+
+    public void AddCoin(float coin)
+    {
+        UserData.coin += coin;
     }
 }
 

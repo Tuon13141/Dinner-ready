@@ -10,7 +10,7 @@ namespace Data
     public class UserData : SavePlayerPrefs
     {
         public int day;
-        public int coin;
+        public float coin;
         public List<int> unlockedFoodIdList = new List<int>();
     }
 

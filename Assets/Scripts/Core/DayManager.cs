@@ -28,10 +28,12 @@ public class DayManager : Singleton<DayManager>, IOnStart
     public bool WaveFinished { get; set; } = true;
     bool isFinishAllWaves = false;
     public bool IsLastWave { get; set; } = false;   
+    public bool NeedTutorial = false;
     float waveCoin = 0;
     public float DayCoin { get; private set; } = 0;
     public float TotalDayCoin { get; private set; } = 0;
-    public float TotalDayVisitor { get; private set; } = 0;
+    public int TotalDayPassenger { get; private set; } = 0;
+    public int ServedPassenger { get; private set; } = 0;
 
     Coroutine spawnFoodCoroutine;
     public void OnStart()
@@ -53,6 +55,18 @@ public class DayManager : Singleton<DayManager>, IOnStart
         passengerManager.NextPassengerController.Reset(isRetry);
         GameUI.Instance.Get<UIInGame>().Show();
 
+        if (NeedTutorial)
+        {
+            if(dayIndex != 0)
+            {
+                NeedTutorial = false;
+            }
+            else
+            {
+                GameManager.Instance.ChangeState(GameStates.Tutorial);
+            }  
+        }
+
         Day day = DayDict[dayIndex];
 
         foreach (Passenger passenger in day.PassengerList)
@@ -65,7 +79,7 @@ public class DayManager : Singleton<DayManager>, IOnStart
                 Food food = FoodDict[id];
                 TotalDayCoin += food.Price * quantity;
             }
-            TotalDayVisitor++;
+            TotalDayPassenger++;
         }
 
         GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
@@ -147,10 +161,30 @@ public class DayManager : Singleton<DayManager>, IOnStart
     {
         if(answer != waveCoin)
         {
-            UIAnimationManager.Instance.PlayAngryEmoji();
-            StartCoroutine(EndGameResult(false));
-            return;
+            if (NeedTutorial)
+            {
+                GameUI.Instance.Get<UIInGame>().SetRedColorValueText();
+                GameUI.Instance.Get<UITutorial>().ShowFailedStage();
+                return;
+            }
+            else
+            {
+                UIAnimationManager.Instance.PlayAngryEmoji();
+                StartCoroutine(EndGameResult(false));
+                return;
+            } 
         }
+
+        if (NeedTutorial)
+        {
+            GameUI.Instance.Get<UITutorial>().ShowSuccessStage();
+            NeedTutorial = false;
+        }
+
+        GameUI.Instance.Get<UIInGame>().SetGreenColorValueText();
+
+        GameManager.Instance.AddCoin(answer);
+
         foreach (FoodController controller in currentFoodControllers)
         {
             controller.ChangeState(FoodStage.OnBilled);
@@ -158,12 +192,14 @@ public class DayManager : Singleton<DayManager>, IOnStart
         
 
         DayCoin += waveCoin;
+        ServedPassenger++;
         GameUI.Instance.Get<UIInGame>().SetProgress(DayCoin, TotalDayCoin);
         waveCoin = 0;
 
         passengerManager.CurrentPassengerController.ChangeState(PassengerStage.OnWalkingOut);
         //WaveFinished = true;
         currentFoodControllers.Clear();
+
 
         if (isFinishAllWaves)
         {
@@ -184,10 +220,12 @@ public class DayManager : Singleton<DayManager>, IOnStart
         waveCoin = 0;
         TotalDayCoin = 0;
         DayCoin = 0;
+        ServedPassenger = 0;
         WaveFinished = true;
         isFinishAllWaves = false;
         currentFoodControllers.Clear();
         IsLastWave = false;
+        TotalDayPassenger = 0;
         dayIndex = GameManager.Instance.UserData.day;
 
         foreach(FoodSpot foodSpot in foodSpots)

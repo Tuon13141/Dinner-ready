@@ -18,22 +18,22 @@ public class UIAnimationManager : Singleton<UIAnimationManager>
         angryEmojiStartPosition = angryEmoji.transform.position;
     }
 
-    public Coroutine PulsingAnimation(GameObject uiObject, Vector3 maxScale, Vector3 minScale, float time, bool useForAngryEmoji = false)
+    public Coroutine PulsingAnimation(GameObject uiObject, Vector3 maxScale, Vector3 minScale, float time, bool needToStopMidWhere = false)
     {
-        return StartCoroutine(ScaleOverTime(uiObject, time, maxScale, minScale, useForAngryEmoji));
+        return StartCoroutine(ScaleOverTime(uiObject, time, maxScale, minScale, needToStopMidWhere));
     }
 
-    IEnumerator ScaleOverTime(GameObject uiObject, float time, Vector3 maxScale, Vector3 minScale, bool useForAngryEmoji)
+    IEnumerator ScaleOverTime(GameObject uiObject, float time, Vector3 maxScale, Vector3 minScale, bool needToStopMidWhere)
     {
         if(uiObject == null) yield break;
-        if (useForAngryEmoji && stopPulsingAnim) yield break;
+        if (needToStopMidWhere && stopPulsingAnim) yield break;
 
         float currentTime = 0.0f;
 
         while (currentTime < time)
         {
             if (uiObject == null) yield break;
-            if (useForAngryEmoji && stopPulsingAnim)
+            if (needToStopMidWhere && stopPulsingAnim)
             {
                 stopPulsingAnim = false;
                 yield break;
@@ -45,7 +45,7 @@ public class UIAnimationManager : Singleton<UIAnimationManager>
 
        
         yield return new WaitForSeconds(0.1f);
-        StartCoroutine(ScaleOverTime(uiObject, time, minScale, maxScale, useForAngryEmoji));
+        StartCoroutine(ScaleOverTime(uiObject, time, minScale, maxScale, needToStopMidWhere));
     }
 
     Coroutine happyEmojiCoroutine;
@@ -61,7 +61,7 @@ public class UIAnimationManager : Singleton<UIAnimationManager>
         angryEmoji.SetActive(true);
         if (angryEmojiCoroutine != null) StopCoroutine(angryEmojiCoroutine);
         angryEmoji.transform.localScale = Vector3.one;
-        angryEmojiCoroutine = PulsingAnimation(angryEmoji, new Vector3(1.3f, 1.3f, 1.3f), new Vector3(1f, 1f, 1f), 0.5f, true);
+        angryEmojiCoroutine = StartCoroutine(ScaleOverTime(angryEmoji, 0.5f, new Vector3(1.3f, 1.3f, 1.3f), new Vector3(1f, 1f, 1f), true));
     }
 
     public void StopAngryEmoji()

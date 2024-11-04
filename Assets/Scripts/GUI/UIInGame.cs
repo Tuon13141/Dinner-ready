@@ -44,6 +44,7 @@ public class UIInGame : UIElement
     [SerializeField] GameObject progressPanel;
 
     [SerializeField] TextMeshProUGUI dayText;
+    [SerializeField] TextMeshProUGUI passengerText;
     public override void Show()
     {
         base.Show();
@@ -265,7 +266,18 @@ public class UIInGame : UIElement
     }
     void DisplayValueText(string str)
     {
+        valueText.color = Color.black;
         valueText.text = str;
+    }
+
+    public void SetGreenColorValueText()
+    {
+        valueText.color = Color.green;
+    }
+
+    public void SetRedColorValueText()
+    {
+        valueText.color = Color.red;
     }
 
     float ConvertStringToFloat(string str)
@@ -302,13 +314,17 @@ public class UIInGame : UIElement
     Coroutine sliderCoroutine;
     public void SetProgress(float a, float b)
     {
-        progressText.text = a.ToString() + "/" + b.ToString();
+        //progressText.text = a.ToString() + "/" + b.ToString();
+        progressText.text = GameManager.Instance.UserData.coin.ToString();
+        passengerText.text = (DayManager.Instance.TotalDayPassenger - DayManager.Instance.ServedPassenger).ToString();
 
-        if(sliderCoroutine != null) StopCoroutine(sliderCoroutine);
+
+        if (sliderCoroutine != null) StopCoroutine(sliderCoroutine);
         sliderCoroutine = StartCoroutine(AnimateFillAmount(a / b));
     }
     private IEnumerator AnimateFillAmount(float targetFillAmount)
     {
+        if(slider == null) yield break;
         float startFillAmount = slider.fillAmount;
         float fillDuration = 0.5f;
         float fillElapsed = 0f;
@@ -354,6 +370,21 @@ public class UIInGame : UIElement
         DisplayValueText("0");
     }
 
+    public void Tutorial()
+    {
+        foreach (FoodIcon foodIcon in availableFoodIcons)
+        {
+            foodIcon.Tutorial();
+        }
+    }
+
+    public void StopTutorial()
+    {
+        foreach (FoodIcon foodIcon in availableFoodIcons)
+        {
+            foodIcon.StopTutorial();
+        }
+    }
 }
 
 [Serializable]
